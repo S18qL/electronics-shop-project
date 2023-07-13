@@ -1,5 +1,5 @@
 import csv
-# from src.phone import Phone
+
 
 class Item:
     """
@@ -62,18 +62,12 @@ class Item:
         Инициализирует экземпляры класса Item данными из файла src/items.csv.
         """
         # cls.all = []
-        try:
-            with open('src/items.csv', 'r', newline='') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    try:
-                        item = cls(row['name'], float(row['price']), int(row['quantity']))
-                        if item not in cls.all:
-                            cls.all.append(item)
-                    except Exception:
-                        raise InstantiateCSVError("Файл item.csv поврежден")
-        except FileNotFoundError:
-            raise FileNotFoundError("Отсутствует файл item.csv")
+        with open('src/items.csv', 'r', newline='') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                item = cls(row['name'], float(row['price']), int(row['quantity']))
+                if item not in cls.all:
+                    cls.all.append(item)
 
     @staticmethod
     def string_to_number(value: str) -> int:
@@ -87,27 +81,8 @@ class Item:
         return int(float(value))
 
     def __repr__(self):
-        return f"Item('{self._name}', {self.price}, {self.quantity})"
+        return f"Item({self._name}, {self.price}, {self.quantity})"
 
     def __str__(self):
         return str(self._name)
 
-    def __add__(self, other):
-        if isinstance(other, Item):
-            return self.quantity + other.quantity
-        else:
-            raise TypeError("Нельзя складывать экземпляры классов Phone и Item с экземплярами других классов.")
-
-
-class InstantiateCSVError(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
-    def __str__(self):
-        if self.message:
-            return 'InstantiateCSVError, {0} '.format(self.message)
-        else:
-            return 'InstantiateCSVError has been raised'
